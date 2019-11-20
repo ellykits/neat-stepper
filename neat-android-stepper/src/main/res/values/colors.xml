@@ -8,6 +8,8 @@
     <color name="colorWhite">#FFFFFF</color>
 
     <!--Custom -->
-    <color name="dotIndicatorDefault">#F0F3F7</color>
+    <color name="dotIndicatorDefault">#BEBEBD</color>
     <color name="dotIndicatorSelected">#278BC4</color>
+    <color name="stepperToolbar">#00B0FF</color>
+    <color name="navButtonBackground">#15000000</color>
 </resources>

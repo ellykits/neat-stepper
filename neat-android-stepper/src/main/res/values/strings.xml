@@ -2,4 +2,7 @@
     <string name="app_name">core</string>
     <string name="back">Back</string>
     <string name="next">Next</string>
+    <string name="complete">Complete</string>
+    <string name="go_back">Go back</string>
+    <string name="finish">Finish</string>
 </resources>

@@ -2,20 +2,47 @@ package com.nerdstone.neatandroidstepper.core.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import com.nerdstone.neatandroidstepper.core.domain.StepperActions
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.nerdstone.neatandroidstepper.core.R
+import com.nerdstone.neatandroidstepper.core.domain.StepperActions
+import com.nerdstone.neatandroidstepper.core.stepper.DepthPageTransformer
 import com.nerdstone.neatandroidstepper.core.stepper.StepperPagerAdapter
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.nerdstone.neatandroidstepper.core.model.StepperModel
+import com.nerdstone.neatandroidstepper.core.model.StepperModel.IndicatorType.*
+import com.nerdstone.neatandroidstepper.core.stepper.Step
+import com.nerdstone.neatandroidstepper.core.utils.TintUtil
 
+class NeatStepperLayout : LinearLayout {
 
-class NeatStepperLayout : LinearLayout, StepperActions {
+    private lateinit var stepperPagerAdapter: StepperPagerAdapter
+    private lateinit var stepperViewPager: ViewPager
+    private lateinit var stepperToolbar: Toolbar
+    private lateinit var bottomNavigationLayout: ConstraintLayout
+    private lateinit var startButton: Button
+    private lateinit var endButton: Button
+    private lateinit var progressBarIndicator: ProgressBar
+    private lateinit var dotIndicator: DotIndicator
+    private lateinit var titleTextView: TextView
+    private lateinit var subTitleTextView: TextView
+    private var currentStepIndex = 0
+    private var numberOfSteps = 1
+    var stepperModel: StepperModel = StepperModel.Builder().build()
+    var stepperActions: StepperActions? = null
+    lateinit var completeButton: ImageButton
+    lateinit var exitButton: ImageButton
 
     constructor(context: Context?) : super(context) {
         initViews()
@@ -27,42 +54,318 @@ class NeatStepperLayout : LinearLayout, StepperActions {
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
-    )
-
-
-    var fragmentList = mutableListOf<Fragment>()
-
-    val stepperPagerAdapter =
-        StepperPagerAdapter(
-            (context as FragmentActivity).supportFragmentManager,
-            fragmentList
-        )
-
-    lateinit var stepperViewPager: ViewPager
-    lateinit var startButton: Button
-    lateinit var endButton: Button
-    lateinit var progressBarIndicator: ProgressBar
+    ) {
+        initViews()
+    }
 
     private fun initViews() {
+
+        bindViews()
+
+        stepperViewPager.apply {
+            setPageTransformer(true, DepthPageTransformer())
+            addOnPageChangeListener(object : OnPageChangeListener {
+
+                override fun onPageSelected(position: Int) {
+                    currentStepIndex = position
+                    applyStepViewProperties()
+                    if (currentStepIndex == numberOfSteps - 1) {
+                        endButton.apply {
+                            setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+                            val completeStepperLabel =
+                                getCurrentStep().stepModel.completeStepperLabel
+                                    ?: stepperModel.completeStepperLabel
+                                    ?: context.getString(R.string.complete)
+                            text = completeStepperLabel
+                            enableCompleteButton(true)
+                        }
+                    } else {
+                        val nextButtonDrawableResId =
+                            getCurrentStep().stepModel.nextButtonDrawableResId
+                                ?: stepperModel.nextButtonDrawableResId
+                        endButton.apply {
+                            setCompoundDrawablesWithIntrinsicBounds(
+                                null, null,
+                                ContextCompat.getDrawable(context, nextButtonDrawableResId!!), null
+                            )
+                            val nextButtonLabel = getCurrentStep().stepModel.nextButtonLabel
+                                ?: stepperModel.nextButtonLabel ?: context.getString(R.string.next)
+                            text = nextButtonLabel
+                        }
+                        enableCompleteButton(false)
+                    }
+                    dotIndicator.setCurrentDot(position, true)
+                    showOrHidePreviousButton()
+                    updateProgress()
+                    updateToolbar()
+                }
+
+                override fun onPageScrolled(
+                    position: Int, positionOffset: Float, positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+            })
+        }
+
+        startButton.apply {
+            visibility = View.INVISIBLE
+            setOnClickListener {
+                stepperActions?.onButtonPreviousClick(getCurrentStep())
+                stepperViewPager.currentItem--
+            }
+        }
+
+        endButton.apply {
+            setOnClickListener {
+                when {
+                    currentStepIndex != numberOfSteps - 1 && currentStepIndex >= 0 -> {
+                        stepperActions?.onButtonNextClick(getCurrentStep())
+                        stepperViewPager.currentItem++
+                    }
+                    currentStepIndex == numberOfSteps - 1 ->
+                        stepperActions?.onStepComplete(getCurrentStep())
+                }
+            }
+        }
+
+        exitButton.apply {
+            setOnClickListener {
+                if (currentStepIndex >= 0) {
+                    stepperViewPager.currentItem--
+                    if (currentStepIndex == 0) {
+                        stepperActions?.onExitStepper()
+                    }
+                }
+                if (currentStepIndex > 0) {
+                    currentStepIndex--
+                }
+            }
+        }
+
+        completeButton.apply {
+            setOnClickListener {
+                stepperActions?.onCompleteStepper()
+            }
+        }
+
+        updateProgress()
+    }
+
+    private fun bindViews() {
         val contextThemeWrapper = ContextThemeWrapper(context, context.theme)
         LayoutInflater.from(contextThemeWrapper).inflate(R.layout.stepper_main_layout, this, true)
-        stepperViewPager = findViewById(R.id.stepperViewPager)
-        startButton = findViewById(R.id.startButton)
-        endButton = findViewById(R.id.endButton)
         progressBarIndicator = findViewById(R.id.progressBar)
+        dotIndicator = findViewById(R.id.dotIndicator)
+        titleTextView = findViewById(R.id.titleTextView)
+        subTitleTextView = findViewById(R.id.subTitleTextView)
+        bottomNavigationLayout = findViewById(R.id.bottomNavigationLayout)
+        stepperToolbar = findViewById(R.id.stepperToolBar)
+        completeButton = findViewById(R.id.completeButton)
+        exitButton = findViewById(R.id.exitButton)
+        endButton = findViewById(R.id.endButton)
+        startButton = findViewById(R.id.startButton)
+        stepperViewPager = findViewById(R.id.stepperViewPager)
     }
 
-
-    override fun onNextClick() {
-
+    private fun showOrHidePreviousButton() {
+        when {
+            currentStepIndex > 0 && getCurrentStep().stepModel.isPreviousButtonVisible!!
+            -> startButton.visibility = View.VISIBLE
+            currentStepIndex == 0 -> startButton.visibility = View.INVISIBLE
+        }
     }
 
-    override fun onBackClick() {
-        TODO("not implemented")
+    fun setUpViewWithAdapter(stepperPagerAdapter: StepperPagerAdapter) {
+        this.stepperPagerAdapter = stepperPagerAdapter
+        if (this::stepperViewPager.isInitialized) {
+            stepperViewPager.adapter = this.stepperPagerAdapter
+            progressBarIndicator.max = this.stepperPagerAdapter.count
+            numberOfSteps = this.stepperPagerAdapter.count
+            if (numberOfSteps == 1) {
+                bottomNavigationLayout.visibility = GONE
+            }
+            setupDotIndicatorView()
+            updateToolbar()
+            applyStepperViewProperties()
+        }
     }
 
-    override fun onComplete() {
-        TODO("not implemented")
+    private fun setupDotIndicatorView() {
+        dotIndicator.apply {
+            addDots(numberOfSteps)
+            stepperModel.dotIndicatorColors?.also { pair ->
+                this.indicatorColorDefault = ContextCompat.getColor(context, pair.first)
+                this.indicatorColorSelected = ContextCompat.getColor(context, pair.second)
+            }
+            setCurrentDot(0, false)
+        }
     }
 
+    /***
+     * Update the title and And toolbar background color
+     */
+    private fun updateToolbar() {
+        val toolbarColorResId =
+            getCurrentStep().stepModel.toolbarColorResId ?: stepperModel.toolbarColorResId
+        stepperToolbar.apply {
+            setBackgroundResource(toolbarColorResId!!)
+        }
+
+        val step = getCurrentStep()
+        titleTextView.text = step.stepModel.title
+        subTitleTextView.apply {
+            if (step.stepModel.subTitle != null) {
+                visibility = View.VISIBLE
+                text = step.stepModel.subTitle
+            } else {
+                visibility = View.GONE
+                text = ""
+            }
+        }
+    }
+
+    private fun updateProgress() {
+        progressBarIndicator.progress = currentStepIndex + 1
+    }
+
+    private fun getCurrentStep(): Step {
+        return stepperPagerAdapter.getItem(stepperViewPager.currentItem) as Step
+    }
+
+    private fun applyStepperViewProperties() {
+        stepperModel.also {
+            bottomNavigationLayout.apply {
+                visibility = toggleVisibility(it.showBottomNavigationButtons!! && numberOfSteps > 1)
+            }
+            stepperToolbar.apply {
+                setBackgroundResource(it.toolbarColorResId!!)
+                visibility = toggleVisibility(it.showToolbar!!)
+            }
+            exitButton.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, it.exitButtonDrawableResId!!))
+            }
+            completeButton.apply {
+                val drawable = ContextCompat.getDrawable(context, it.completeButtonDrawableResId!!)
+                setImageDrawable(drawable)
+                when {
+                    numberOfSteps > 1 -> enableCompleteButton(false)
+                    numberOfSteps == 1 -> enableCompleteButton(true)
+                }
+            }
+            progressBarIndicator.apply {
+                visibility = toggleVisibility(stepperModel.showProgressIndicator!!)
+            }
+
+            bottomNavigationLayout.apply {
+                visibility = toggleVisibility(numberOfSteps > 1)
+
+            }
+            chooseIndicatorType(it.indicatorType!!)
+            enableCompleteButton(numberOfSteps == 1)
+            updateBottomNavigationBackgroundColor(stepperModel.bottomNavigationColorResId!!)
+        }
+    }
+
+    private fun updateBottomNavigationBackgroundColor(@ColorRes colorRes: Int) {
+        if (colorRes != R.color.colorWhite && colorRes != android.R.color.transparent) {
+            bottomNavigationLayout.apply {
+                setBackgroundResource(colorRes)
+                endButton.apply {
+                    setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+                    TintUtil.tintDrawable(
+                        this.compoundDrawables[2],
+                        ContextCompat.getColor(context, R.color.colorWhite)
+                    )
+                }
+                startButton.apply {
+                    setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+                    TintUtil.tintDrawable(
+                        startButton.compoundDrawables[0],
+                        ContextCompat.getColor(context, R.color.colorWhite)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun enableCompleteButton(enabled: Boolean) {
+        completeButton.apply {
+            isEnabled = enabled
+            TintUtil.tintDrawable(
+                this.drawable, if (enabled)
+                    ContextCompat.getColor(context, R.color.colorWhite)
+                else
+                    ContextCompat.getColor(context, R.color.colorDarkGrey)
+            )
+        }
+    }
+
+    private fun chooseIndicatorType(indicatorType: StepperModel.IndicatorType) {
+        if (stepperModel.showProgressIndicator!!) {
+            when (indicatorType) {
+                DOT_INDICATOR -> {
+                    dotIndicator.visibility = View.VISIBLE
+                    progressBarIndicator.visibility = View.GONE
+                }
+                PROGRESS_BAR_INDICATOR -> {
+                    dotIndicator.visibility = View.GONE
+                    progressBarIndicator.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun applyStepViewProperties() {
+        getCurrentStep().stepModel.also {
+            val nextButtonLabel = it.previousButtonLabel ?: stepperModel.nextButtonLabel
+            ?: context.getString(R.string.next)
+            val nextButtonDrawableResId =
+                it.nextButtonDrawableResId ?: stepperModel.nextButtonDrawableResId
+            endButton.apply {
+                text = nextButtonLabel
+                visibility = toggleVisibility(it.isNextButtonVisible!!, VisibilityState.INVISIBLE)
+                setCompoundDrawablesWithIntrinsicBounds(
+                    null, null,
+                    ContextCompat.getDrawable(context, nextButtonDrawableResId!!), null
+                )
+            }
+
+            val previousButtonLabel = it.previousButtonLabel ?: stepperModel.previousButtonLabel
+            ?: context.getString(R.string.back)
+
+            val previousButtonDrawableResId =
+                it.previousButtonDrawableResId ?: stepperModel.previousButtonDrawableResId
+            startButton.apply {
+                text = previousButtonLabel
+                visibility =
+                    toggleVisibility(it.isPreviousButtonVisible!!, VisibilityState.INVISIBLE)
+                setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, previousButtonDrawableResId!!), null,
+                    null, null
+                )
+            }
+            val bottomNavigationColor =
+                it.bottomNavigationColorResId ?: stepperModel.bottomNavigationColorResId
+            updateBottomNavigationBackgroundColor(bottomNavigationColor!!)
+        }
+    }
+
+    private fun toggleVisibility(
+        visible: Boolean, visibilityState: VisibilityState = VisibilityState.GONE
+    ): Int {
+        return if (visible) View.VISIBLE else {
+            when (visibilityState) {
+                VisibilityState.GONE -> View.GONE
+                else -> View.INVISIBLE
+            }
+        }
+    }
+
+    enum class VisibilityState {
+        INVISIBLE,
+        GONE
+    }
 }

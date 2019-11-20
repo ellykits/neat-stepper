@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dot_indicator_size">10dp</dimen>
+    <dimen name="progress_indicator_width">100dp</dimen>
+    <dimen name="toolbar_buttons_padding">10dp</dimen>
+
+    <!--Nav button -->
+    <dimen name="nav_button_margin">8dp</dimen>
+    <dimen name="nav_button_corner_radius">2dp</dimen>
+    <dimen name="nv_button_vertical_padding">4dp</dimen>
+    <dimen name="nav_button_horizontal_padding">8dp</dimen>
+    <dimen name="nav_button_text_size">14sp</dimen>
 </resources>
