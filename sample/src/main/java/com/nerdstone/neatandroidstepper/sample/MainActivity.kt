@@ -26,12 +26,9 @@ class MainActivity : FragmentActivity(), StepperActions {
             StepperPagerAdapter(
                 supportFragmentManager,
                 mutableListOf(
-                    StepOneFragment(StepModel.Builder().title("Profile").subTitle("Demographic Info").build()),
-                    StepTwoFragment(StepModel.Builder().title("Profile").subTitle("Medications").build()),
-                    StepOneFragment(StepModel.Builder().title("Profile").subTitle("Demographic Info").build()),
-                    StepTwoFragment(StepModel.Builder().title("Profile").subTitle("Current Pregnancy").build()),
-                    StepTwoFragment(StepModel.Builder().title("Profile").subTitle("Medical History").build()),
-                    StepOneFragment(StepModel.Builder().title("Profile").subTitle("Obstetric Section").build())
+                    StepOneFragment(StepModel.Builder().title("Step Sample").subTitle("One").build()),
+                    StepOneFragment(StepModel.Builder().title("Step Sample").subTitle("Two").build()),
+                    StepOneFragment(StepModel.Builder().title("Step Sample").subTitle("Three").build())
                 )
             )
         )

@@ -2,6 +2,7 @@ package com.nerdstone.neatandroidstepper.core.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
@@ -54,6 +55,7 @@ class DotIndicator : LinearLayout {
     private fun initView() {
         orientation = HORIZONTAL
         isHorizontalScrollBarEnabled = true
+        gravity = Gravity.CENTER_HORIZONTAL
         addDots(1)
     }
 
