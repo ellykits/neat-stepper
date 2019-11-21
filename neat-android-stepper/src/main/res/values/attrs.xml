@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Custom XML style for neat stepper layout -->
+    <declare-styleable name="NeatStepperLayout">
+        <attr name="next_button_label" format="string" />
+        <attr name="previous_button_label" format="string" />
+        <attr name="complete_button_label" format="string" />
+        <attr name="toolbar_color" format="color" />
+        <attr name="bottom_navigation_background_color" format="color" />
+        <attr name="next_button_drawable_end" format="reference" />
+        <attr name="previous_button_drawable_start" format="reference" />
+        <attr name="exit_button_drawable" format="reference" />
+        <attr name="complete_button_drawable" format="reference" />
+        <attr name="show_bottom_navigation_buttons" format="boolean" />
+        <attr name="show_toolbar" format="boolean" />
+        <attr name="show_progress_indicator" format="boolean" />
+        <attr name="indicator_type" format="enum">
+            <enum name="dot_indicator" value="0" />
+            <enum name="progress_bar_indicator" value="1" />
+        </attr>
+        <attr name="dot_indicator_default_color" format="color" />
+        <attr name="dot_indicator_selected_color" format="color" />
+    </declare-styleable>
+</resources>

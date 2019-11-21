@@ -21,66 +21,17 @@ class MainActivity : FragmentActivity(), StepperActions {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         neatStepperLayout = findViewById(R.id.neatStepperLayout)
-        neatStepperLayout.stepperModel = StepperModel.Builder()
-            .toolbarColorResource(R.color.colorDarkBlue)
-            .completeButtonLabel("Finish")
-            .indicatorType(StepperModel.IndicatorType.DOT_INDICATOR)
-            .bottomNavigationColorResource(R.color.colorPrimaryDark)
-            .build()
         neatStepperLayout.stepperActions = this
         neatStepperLayout.setUpViewWithAdapter(
             StepperPagerAdapter(
                 supportFragmentManager,
                 mutableListOf(
                     StepOneFragment(StepModel.Builder().title("Profile").subTitle("Demographic Info").build()),
-                    StepTwoFragment(
-                        StepModel.Builder()
-                            .title("Profile")
-                            .subTitle("Medications")
-                            .nextButtonLabel("GO")
-                            .previousButtonLabel("Prev")
-                            .toolbarColorResource(R.color.colorBrown)
-                            .build()
-                    ),
-                    StepOneFragment(
-                        StepModel.Builder()
-                            .title("Profile")
-                            .subTitle("Demographic Info")
-                            .previousButtonDrawableResource(R.drawable.ic_arrow_back)
-                            .bottomNavigationColorResource(R.color.colorBrown)
-                            .toolbarColorResource(R.color.colorDarkBlue)
-                            .nextButtonDrawableResource(R.drawable.ic_arrow_forward)
-                            .build()
-                    ),
-                    StepTwoFragment(
-                        StepModel.Builder()
-                            .title("Profile")
-                            .subTitle("Current Pregnancy")
-                            .nextButtonLabel("GO")
-                            .previousButtonLabel("Prev")
-                            .bottomNavigationColorResource(R.color.colorCyan)
-                            .toolbarColorResource(R.color.colorBrown)
-                            .build()
-                    ),
-                    StepTwoFragment(
-                        StepModel.Builder()
-                            .title("Profile")
-                            .subTitle("Medical History")
-                            .nextButtonLabel("GO")
-                            .previousButtonLabel("Prev")
-                            .toolbarColorResource(R.color.colorAmber)
-                            .bottomNavigationColorResource(R.color.colorBlueGrey)
-                            .build()
-                    ),
-                    StepOneFragment(
-                        StepModel.Builder()
-                            .title("Profile")
-                            .subTitle("Obstetric Section")
-                            .previousButtonDrawableResource(R.drawable.ic_arrow_back)
-                            .bottomNavigationColorResource(R.color.colorLightBlue)
-                            .nextButtonDrawableResource(R.drawable.ic_arrow_forward)
-                            .build()
-                    )
+                    StepTwoFragment(StepModel.Builder().title("Profile").subTitle("Medications").build()),
+                    StepOneFragment(StepModel.Builder().title("Profile").subTitle("Demographic Info").build()),
+                    StepTwoFragment(StepModel.Builder().title("Profile").subTitle("Current Pregnancy").build()),
+                    StepTwoFragment(StepModel.Builder().title("Profile").subTitle("Medical History").build()),
+                    StepOneFragment(StepModel.Builder().title("Profile").subTitle("Obstetric Section").build())
                 )
             )
         )

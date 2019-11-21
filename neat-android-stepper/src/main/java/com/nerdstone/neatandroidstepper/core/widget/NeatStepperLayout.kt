@@ -44,21 +44,23 @@ class NeatStepperLayout : LinearLayout {
     lateinit var completeButton: ImageButton
     lateinit var exitButton: ImageButton
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context?) : super(context, null) {
         initViews()
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        initViews()
+        initViews(attrs)
     }
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
     ) {
-        initViews()
+        initViews(attrs)
     }
 
-    private fun initViews() {
+    private fun initViews(attrs: AttributeSet? = null) {
+
+        if (attrs != null) setupViewAttributes(attrs)
 
         bindViews()
 
@@ -68,33 +70,9 @@ class NeatStepperLayout : LinearLayout {
 
                 override fun onPageSelected(position: Int) {
                     currentStepIndex = position
-                    applyStepViewProperties()
-                    if (currentStepIndex == numberOfSteps - 1) {
-                        endButton.apply {
-                            setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-                            val completeStepperLabel =
-                                getCurrentStep().stepModel.completeStepperLabel
-                                    ?: stepperModel.completeStepperLabel
-                                    ?: context.getString(R.string.complete)
-                            text = completeStepperLabel
-                            enableCompleteButton(true)
-                        }
-                    } else {
-                        val nextButtonDrawableResId =
-                            getCurrentStep().stepModel.nextButtonDrawableResId
-                                ?: stepperModel.nextButtonDrawableResId
-                        endButton.apply {
-                            setCompoundDrawablesWithIntrinsicBounds(
-                                null, null,
-                                ContextCompat.getDrawable(context, nextButtonDrawableResId!!), null
-                            )
-                            val nextButtonLabel = getCurrentStep().stepModel.nextButtonLabel
-                                ?: stepperModel.nextButtonLabel ?: context.getString(R.string.next)
-                            text = nextButtonLabel
-                        }
-                        enableCompleteButton(false)
-                    }
                     dotIndicator.setCurrentDot(position, true)
+                    applyStepViewProperties()
+                    setNextButtonDrawableEnd()
                     showOrHidePreviousButton()
                     updateProgress()
                     updateToolbar()
@@ -103,9 +81,11 @@ class NeatStepperLayout : LinearLayout {
                 override fun onPageScrolled(
                     position: Int, positionOffset: Float, positionOffsetPixels: Int
                 ) {
+                    //Implementation pending
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
+                    //Implementation pending
                 }
             })
         }
@@ -152,6 +132,116 @@ class NeatStepperLayout : LinearLayout {
         }
 
         updateProgress()
+    }
+
+    private fun setNextButtonDrawableEnd() {
+        if (currentStepIndex == numberOfSteps - 1) {
+            endButton.apply {
+                setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+                val completeStepperLabel =
+                    getCurrentStep().stepModel.completeStepperLabel
+                        ?: stepperModel.completeStepperLabel
+                        ?: context.getString(R.string.complete)
+                text = completeStepperLabel
+                enableCompleteButton(true)
+            }
+        } else {
+            val nextButtonDrawableResId =
+                getCurrentStep().stepModel.nextButtonDrawableResId
+                    ?: stepperModel.nextButtonDrawableResId
+            endButton.apply {
+                setCompoundDrawablesWithIntrinsicBounds(
+                    null, null,
+                    ContextCompat.getDrawable(context, nextButtonDrawableResId!!), null
+                )
+                val nextButtonLabel = getCurrentStep().stepModel.nextButtonLabel
+                    ?: stepperModel.nextButtonLabel ?: context.getString(R.string.next)
+                text = nextButtonLabel
+            }
+            enableCompleteButton(false)
+        }
+    }
+
+    /**
+     * Obtain custom xml attributes passed for the stepper view
+     */
+    private fun setupViewAttributes(attrs: AttributeSet?) {
+        val typedArray = context.theme.obtainStyledAttributes(
+            attrs, R.styleable.NeatStepperLayout, 0, 0
+        )
+        try {
+            stepperModel.also {
+                it.dotIndicatorColors = Pair(
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_dot_indicator_default_color,
+                        R.color.dotIndicatorDefault
+                    ),
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_dot_indicator_selected_color,
+                        R.color.dotIndicatorSelected
+                    )
+                )
+                it.indicatorType =
+                    if (typedArray.getInt(R.styleable.NeatStepperLayout_indicator_type, 1) == 0)
+                        DOT_INDICATOR else PROGRESS_BAR_INDICATOR
+
+                it.nextButtonDrawableResId =
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_next_button_drawable_end,
+                        R.drawable.ic_chevron_right
+                    )
+                it.previousButtonDrawableResId =
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_previous_button_drawable_start,
+                        R.drawable.ic_chevron_left
+                    )
+                it.toolbarColorResId =
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_toolbar_color,
+                        R.color.stepperToolbar
+                    )
+                it.bottomNavigationColorResId =
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_bottom_navigation_background_color,
+                        android.R.color.transparent
+                    )
+                it.exitButtonDrawableResId =
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_exit_button_drawable,
+                        R.drawable.ic_clear
+                    )
+                it.completeButtonDrawableResId =
+                    typedArray.getResourceId(
+                        R.styleable.NeatStepperLayout_complete_button_drawable,
+                        R.drawable.ic_check
+                    )
+
+                it.showToolbar = typedArray.getBoolean(
+                    R.styleable.NeatStepperLayout_show_toolbar, true
+                )
+
+                it.showProgressIndicator = typedArray.getBoolean(
+                    R.styleable.NeatStepperLayout_show_progress_indicator, true
+                )
+
+                it.showBottomNavigationButtons = typedArray.getBoolean(
+                    R.styleable.NeatStepperLayout_show_bottom_navigation_buttons, true
+                )
+
+                it.nextButtonLabel = typedArray.getString(
+                    R.styleable.NeatStepperLayout_next_button_label
+                )
+
+                it.previousButtonLabel = typedArray.getString(
+                    R.styleable.NeatStepperLayout_previous_button_label
+                )
+                it.completeStepperLabel = typedArray.getString(
+                    R.styleable.NeatStepperLayout_complete_button_label
+                )
+            }
+        } finally {
+            typedArray.recycle()
+        }
     }
 
     private fun bindViews() {
@@ -255,17 +345,21 @@ class NeatStepperLayout : LinearLayout {
                     numberOfSteps == 1 -> enableCompleteButton(true)
                 }
             }
+            startButton.apply {
+                text = stepperModel.previousButtonLabel
+                setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(context, stepperModel.previousButtonDrawableResId!!),
+                    null, null, null
+                )
+            }
             progressBarIndicator.apply {
                 visibility = toggleVisibility(stepperModel.showProgressIndicator!!)
             }
 
-            bottomNavigationLayout.apply {
-                visibility = toggleVisibility(numberOfSteps > 1)
-
-            }
             chooseIndicatorType(it.indicatorType!!)
             enableCompleteButton(numberOfSteps == 1)
             updateBottomNavigationBackgroundColor(stepperModel.bottomNavigationColorResId!!)
+            setNextButtonDrawableEnd()
         }
     }
 
