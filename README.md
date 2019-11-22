@@ -2,7 +2,7 @@
 # Neat Android Stepper  
   
 A Library that allows you to implement android stepper in your application.   
-Steppers are used to display progress of logically separated sections normaly referred to as `steps`. This library was inspired by stepstone-tech [Android Material Stepper Library](https://www.google.com/design/spec/components/steppers.html)  
+Steppers are used to display progress of logically separated sections normally referred to as `steps`. This library was inspired by stepstone-tech [Android Material Stepper Library](https://www.google.com/design/spec/components/steppers.html)  
   
 Code & features mentioned in [Getting started](#getting-started) are showcased in the sample app.  
   
@@ -44,29 +44,40 @@ Add these content to the file.
 gpr.usr=YOUR_GITHUB_USERID
 gpr.key=YOUR_PERSONAL_ACCESS_TOKEN
 ```
-**Step 3** : Update `build.gradle` inside the application module
+**Step 3** : Update `build.gradle` for the application module
 
 ```groovy
-repositories {  
-  maven {  
-		  name = "GitHubPackages"  
-		  /**  
-		 * Configure path of the package repository on Github using the GITHUB_USER_ID and * Git Repository */  
-		  url = uri("https://maven.pkg.github.com/ellykits/neat-android-stepper")  
-		  credentials {  
-			  /** get credentials from github.properties in root project folder file with  
-			 ** gpr.usr=GITHUB_USER_ID & gpr.key=PERSONAL_ACCESS_TOKEN otherwise ** Set env variable GPR_USER & GPR_API_KEY**/  
-			  username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")  
-			  password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")  
-		 } 
-	}
+//For publishing dependency to GitHub package
+def githubProperties = new Properties()
+//Read the github properties content
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
+android {
+     //...
+     // include inside the android closure
+    repositories {  
+      maven {  
+              name = "GitHubPackages"  
+              /**  
+             * Configure path of the package repository on Github using the GITHUB_USER_ID and * Git Repository */  
+              url = uri("https://maven.pkg.github.com/ellykits/neat-android-stepper")  
+              credentials {  
+                  /** get credentials from github.properties in root project folder file with  
+                 ** gpr.usr=GITHUB_USER_ID & gpr.key=PERSONAL_ACCESS_TOKEN otherwise ** Set env variable GPR_USER & GPR_API_KEY**/  
+                  username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")  
+                  password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")  
+             } 
+        }
+    }
+    //...
 }
+
 ```
 Add the library in the dependency section of your application's `build.gradle` file. Update the version accordingly 
 ```groovy
 dependencies {
 	//consume library - use the latest version available on github packages
-	implementation 'com.nerdstone.neat-android-stepper:1.0.0'
+	implementation "com.nerdstone:neat-android-stepper:1.0.0"
 	//....
 
 }
