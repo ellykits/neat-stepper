@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
 android {
     compileSdkVersion 28
 
@@ -45,4 +46,48 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+//For publishing dependency to GitHub package
+def githubProperties = new Properties()
+
+//Read the github properties content
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
+def getVersionName = { ->
+    return "1.0.0"
+}
+
+def getArtifactId = { ->
+    return "neat-android-stepper"
+}
+
+publishing {
+    publications {
+        bar(MavenPublication) {
+            groupId 'com.nerdstone'
+            artifactId getArtifactId()
+            version getVersionName()
+            artifact("$buildDir/outputs/aar/${getArtifactId()}-release.aar")
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            /**
+             * Configure path of the package repository on Github using the GITHUB_USER_ID and
+             * Git Repository
+             */
+            url = uri("https://maven.pkg.github.com/ellykits/neat-android-stepper")
+            credentials {
+                /** get credentials from github.properties in root project folder file with
+                 ** gpr.usr=GITHUB_USER_ID & gpr.key=PERSONAL_ACCESS_TOKEN otherwise
+                 ** Set env variable GPR_USER & GPR_API_KEY**/
+
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
 }
