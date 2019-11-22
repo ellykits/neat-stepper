@@ -277,6 +277,9 @@ class NeatStepperLayout : LinearLayout {
             if (numberOfSteps == 1) {
                 bottomNavigationLayout.visibility = GONE
             }
+            val bottomNavigationColor =
+                getCurrentStep().stepModel.bottomNavigationColorResId ?: stepperModel.bottomNavigationColorResId
+            updateBottomNavigationBackgroundColor(bottomNavigationColor!!)
             setupDotIndicatorView()
             updateToolbar()
             applyStepperViewProperties()

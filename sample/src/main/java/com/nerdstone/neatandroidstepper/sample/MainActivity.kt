@@ -10,7 +10,6 @@ import com.nerdstone.neatandroidstepper.core.model.StepperModel
 import com.nerdstone.neatandroidstepper.core.stepper.Step
 import com.nerdstone.neatandroidstepper.core.stepper.StepVerificationState
 import com.nerdstone.neatandroidstepper.core.stepper.StepperPagerAdapter
-import com.nerdstone.neatandroidstepper.core.widget.DotIndicator
 import com.nerdstone.neatandroidstepper.core.widget.NeatStepperLayout
 
 class MainActivity : FragmentActivity(), StepperActions {
@@ -26,9 +25,26 @@ class MainActivity : FragmentActivity(), StepperActions {
             StepperPagerAdapter(
                 supportFragmentManager,
                 mutableListOf(
-                    StepOneFragment(StepModel.Builder().title("Step Sample").subTitle("One").build()),
-                    StepOneFragment(StepModel.Builder().title("Step Sample").subTitle("Two").build()),
-                    StepOneFragment(StepModel.Builder().title("Step Sample").subTitle("Three").build())
+                    StepOneFragment(
+                        StepModel.Builder()
+                            .title("Step Sample")
+                            .subTitle("One")
+                            .bottomNavigationColorResource(R.color.colorBlack)
+                            .build()
+                    ),
+                    StepOneFragment(
+                        StepModel.Builder()
+                            .title("Step Sample").subTitle("Two")
+                            .bottomNavigationColorResource(R.color.colorGreen)
+                            .build()
+                    ),
+                    StepOneFragment(
+                        StepModel.Builder()
+                            .title("Step Sample")
+                            .subTitle("Three")
+                            .bottomNavigationColorResource(R.color.colorPink)
+                            .build()
+                    )
                 )
             )
         )
