@@ -149,7 +149,8 @@ class MainActivity : FragmentActivity(), StepperActions {
 ### Customizing Stepper
 In case you need different labels for the Next and Back buttons or if you want to change the images for the exit and complete button you can use the `StepperModel` Builder class. Alternative you can define the desired attributes on the `xml` layout.
 To do this programmatically  instantiate the `StepperModel` class using its builder and update the `stepperModel` property of `NeatStepperLayout` with the new class you just created.
-<img src ="./gifs/stepper_custom.gif" width="360" />
+
+<p><img src ="./gifs/stepper_custom.gif" width="360" /></p>
 
 ```kotlin
 neatStepperLayout = findViewById(R.id.neatStepperLayout)  
