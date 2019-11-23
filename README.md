@@ -37,9 +37,9 @@ At the moment GitHub requires you to authenticate to download Android Libraries 
 **Step 1** : Generate a Personal Access Token for GitHub [How to generate GitHub personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 
 **Step 2** : Store your GitHub — Personal Access Token details 
-Create a file **`github.properties`** inside the root directory of your project. (Add this file to `.gitignore` file for public  repositories  to keep your secrets safe)
 
-Add these content to the file.
+Add these content to the **`local.properties`** file inside the root directory of your project. 
+.
 ```
 gpr.usr=YOUR_GITHUB_USERID
 gpr.key=YOUR_PERSONAL_ACCESS_TOKEN
@@ -50,7 +50,7 @@ gpr.key=YOUR_PERSONAL_ACCESS_TOKEN
 //For publishing dependency to GitHub package
 def githubProperties = new Properties()
 //Read the github properties content
-githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+githubProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
      //...
