@@ -13,7 +13,7 @@
         android:background="@color/stepperToolbar"
         android:minHeight="?attr/actionBarSize">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/topNavigationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -22,54 +22,57 @@
                 android:id="@+id/exitButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/go_back"
-                android:padding="@dimen/toolbar_buttons_padding"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/titleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/colorWhite"
-                android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/exitButton"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/subTitleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@color/colorWhite"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/exitButton"
-                app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+                android:padding="@dimen/toolbar_buttons_padding" />
 
             <ImageButton
                 android:id="@+id/completeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/finish"
-                android:padding="@dimen/toolbar_buttons_padding"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:padding="@dimen/toolbar_buttons_padding" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/exitButton"
+                android:layout_toStartOf="@+id/completeButton"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/subTitleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
