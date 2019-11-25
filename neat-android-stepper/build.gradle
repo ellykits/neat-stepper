@@ -55,7 +55,7 @@ def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 def getVersionName = { ->
-    return "1.0.0"
+    return "1.0.1"
 }
 
 def getArtifactId = { ->
