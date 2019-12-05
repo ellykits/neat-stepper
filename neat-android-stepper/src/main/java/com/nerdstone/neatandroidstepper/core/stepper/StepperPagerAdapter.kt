@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 
 class StepperPagerAdapter(
@@ -16,6 +17,10 @@ class StepperPagerAdapter(
 
     override fun getCount(): Int {
         return fragmentList.size
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return PagerAdapter.POSITION_NONE
     }
 }
 

@@ -25,7 +25,7 @@ class StepOneFragment : Step {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_step_one_fragment, container, false)
         val linearLayout = view.findViewById<LinearLayout>(R.id.fragmentLinearLayout)
-        for (i in 1..200) {
+        for (i in 1..400) {
             val text = TextView(context)
             text.setPadding(16, 16, 16, 16)
             text.text = "Current count $i"
@@ -50,11 +50,7 @@ class StepOneFragment : Step {
 /**
  * A simple [Fragment] subclass.
  */
-class StepTwoFragment : Step {
-
-    constructor()
-
-    constructor(stepModel: StepModel) : super(stepModel)
+class StepTwoFragment : Step() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

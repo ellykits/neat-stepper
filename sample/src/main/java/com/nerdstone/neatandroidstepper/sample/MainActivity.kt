@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.nerdstone.neatandroidstepper.core.domain.StepperActions
 import com.nerdstone.neatandroidstepper.core.model.StepModel
-import com.nerdstone.neatandroidstepper.core.model.StepperModel
 import com.nerdstone.neatandroidstepper.core.stepper.Step
 import com.nerdstone.neatandroidstepper.core.stepper.StepVerificationState
 import com.nerdstone.neatandroidstepper.core.stepper.StepperPagerAdapter
@@ -48,6 +47,7 @@ class MainActivity : FragmentActivity(), StepperActions {
                 )
             )
         )
+        neatStepperLayout.showLoadingIndicators(false)
     }
 
     override fun onStepError(stepVerificationState: StepVerificationState) {

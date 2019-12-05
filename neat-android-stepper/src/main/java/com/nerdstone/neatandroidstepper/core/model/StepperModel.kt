@@ -2,7 +2,9 @@ package com.nerdstone.neatandroidstepper.core.model
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.graphics.ColorUtils
 import com.nerdstone.neatandroidstepper.core.R
+import com.nerdstone.neatandroidstepper.core.utils.ColorUtil
 
 class StepperModel private constructor() {
 
