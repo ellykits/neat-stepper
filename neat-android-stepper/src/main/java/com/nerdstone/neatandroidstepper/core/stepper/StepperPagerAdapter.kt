@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager
 
 class StepperPagerAdapter(
     fragmentManager: FragmentManager, var fragmentList: List<Step> = mutableListOf()
-) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+) : FragmentStatePagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]
