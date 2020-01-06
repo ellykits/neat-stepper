@@ -1,2 +1,1 @@
 include ':sample', ':neat-android-stepper'
-rootProject.name='Neat Android Stepper'
