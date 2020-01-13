@@ -4,7 +4,7 @@
     android:id="@+id/neatStepperLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:toolbar_color="@color/colorBrown"
+    app:toolbar_color="@color/colorBlack"
     app:dot_indicator_default_color="@color/colorWhite"
     app:show_progress_indicator="false"
     app:dot_indicator_selected_color="@color/colorYellow"

@@ -12,17 +12,18 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.Toolbar
-import androidx.viewpager.widget.ViewPager
-import com.nerdstone.neatandroidstepper.core.R
-import com.nerdstone.neatandroidstepper.core.domain.StepperActions
-import com.nerdstone.neatandroidstepper.core.stepper.DepthPageTransformer
-import com.nerdstone.neatandroidstepper.core.stepper.StepperPagerAdapter
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.nerdstone.neatandroidstepper.core.R
+import com.nerdstone.neatandroidstepper.core.domain.StepperActions
 import com.nerdstone.neatandroidstepper.core.model.StepperModel
-import com.nerdstone.neatandroidstepper.core.model.StepperModel.IndicatorType.*
+import com.nerdstone.neatandroidstepper.core.model.StepperModel.IndicatorType.DOT_INDICATOR
+import com.nerdstone.neatandroidstepper.core.model.StepperModel.IndicatorType.PROGRESS_BAR_INDICATOR
+import com.nerdstone.neatandroidstepper.core.stepper.DepthPageTransformer
 import com.nerdstone.neatandroidstepper.core.stepper.Step
+import com.nerdstone.neatandroidstepper.core.stepper.StepperPagerAdapter
 import com.nerdstone.neatandroidstepper.core.utils.TintUtil
 
 class NeatStepperLayout : LinearLayout {
@@ -37,6 +38,8 @@ class NeatStepperLayout : LinearLayout {
     private lateinit var dotIndicator: DotIndicator
     private lateinit var titleTextView: TextView
     private lateinit var subTitleTextView: TextView
+    private lateinit var loadIndicatorText: TextView
+    private lateinit var loadIndicatorProgressBar: ProgressBar
     private var currentStepIndex = 0
     private var numberOfSteps = 1
     var stepperModel: StepperModel = StepperModel.Builder().build()
@@ -258,6 +261,8 @@ class NeatStepperLayout : LinearLayout {
         endButton = findViewById(R.id.endButton)
         startButton = findViewById(R.id.startButton)
         stepperViewPager = findViewById(R.id.stepperViewPager)
+        loadIndicatorText = findViewById(R.id.loadIndicatorText)
+        loadIndicatorProgressBar = findViewById(R.id.loadIndicatorProgressBar)
     }
 
     private fun showOrHidePreviousButton() {
@@ -284,6 +289,11 @@ class NeatStepperLayout : LinearLayout {
             updateToolbar()
             applyStepperViewProperties()
         }
+    }
+
+    fun showLoadingIndicators(showIndicators: Boolean){
+        loadIndicatorProgressBar.visibility = toggleVisibility(showIndicators)
+        loadIndicatorText.visibility = toggleVisibility(showIndicators)
     }
 
     private fun setupDotIndicatorView() {

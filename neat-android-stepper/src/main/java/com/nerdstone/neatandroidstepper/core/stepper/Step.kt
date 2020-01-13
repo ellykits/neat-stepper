@@ -19,9 +19,11 @@ abstract class Step : Fragment, StepActions {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments = Bundle().apply {
-            putString(STEP_TITLE, stepModel?.title.toString())
-            putString(STEP_SUB_TITLE, stepModel?.subTitle.toString())
-        }
+        if(arguments==null)
+            arguments =  Bundle()
+
+        arguments!!.putString(STEP_TITLE, stepModel.title.toString())
+        arguments!!.putString(STEP_SUB_TITLE, stepModel.subTitle.toString())
+
     }
 }
