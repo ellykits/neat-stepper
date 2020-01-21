@@ -30,6 +30,16 @@ Code & features mentioned in [Getting started](#getting-started) are showcased i
     
 ## Getting started  
 
+### Download (From JCenter)
+Add the library as a dependency to your app build.gradle file
+```groovy
+dependencies {
+    //....
+	implementation "com.nerdstone:neat-android-stepper:1.0.6"
+	//....
+
+}
+``` 
 ### Download (From GitHub Packages)
 This library is available as a git package [Neat Stepper Packages](https://github.com/ellykits/neat-android-stepper/packages). 
 At the moment GitHub requires you to authenticate to download Android Libraries hosted on GitHub packages. To do so you will need your **personal access token** and your GitHub **username**. Follow these steps to add the library as a dependency to your app.

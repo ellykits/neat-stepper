@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 29
@@ -10,7 +11,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -48,14 +49,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 
-//For publishing dependency to GitHub package
-def githubProperties = new Properties()
-
-//Read the github properties content
-githubProperties.load(new FileInputStream(rootProject.file("local.properties")))
+def properties = new Properties()
+properties.load(new FileInputStream(rootProject.file("local.properties")))
 
 def getVersionName = { ->
-    return "1.0.1"
+    return "1.0.6"
 }
 
 def getArtifactId = { ->
@@ -64,7 +62,7 @@ def getArtifactId = { ->
 
 publishing {
     publications {
-        bar(MavenPublication) {
+        NeatStepper(MavenPublication) {
             groupId 'com.nerdstone'
             artifactId getArtifactId()
             version getVersionName()
@@ -134,9 +132,33 @@ publishing {
                  ** gpr.usr=GITHUB_USER_ID & gpr.key=PERSONAL_ACCESS_TOKEN otherwise
                  ** Set env variable GPR_USER & GPR_API_KEY**/
 
-                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+                username = properties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = properties['gpr.key'] ?: System.getenv("GPR_API_KEY")
             }
         }
     }
+}
+
+bintray {
+    user = properties['jcenter.usr'] ?: System.getenv('BINTRAY_USER')
+    key = properties['jcenter.key'] ?: System.getenv('BINTRAY_KEY')
+    configurations = ['archives']
+    pkg {
+        repo = 'neat-stepper'
+        name = project.name
+        licenses = ['Apache-2.0']
+        desc = 'Library that allows using material stepper on an Android application.'
+        publish = true
+        vcsUrl = "https://github.com/ellykits/neat-stepper"
+        issueTrackerUrl = 'https://github.com/ellykits/neat-stepper/issues'
+        labels = ['stepper', 'kotlin-android', 'stepper-library']
+        publicDownloadNumbers = true
+        version {
+            name = this.version
+            desc = "Neat Stepper ${this.version}"
+            released = new Date()
+            vcsTag = this.version
+        }
+    }
+    publications = ['NeatStepper']
 }
