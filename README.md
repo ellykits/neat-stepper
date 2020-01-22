@@ -35,7 +35,7 @@ Add the library as a dependency to your app build.gradle file
 ```groovy
 dependencies {
     //....
-	implementation "com.nerdstone:neat-android-stepper:1.0.6"
+	implementation "com.nerdstone:neat-android-stepper:1.0.7"
 	//....
 
 }
@@ -87,7 +87,7 @@ Add the library in the dependency section of your application's `build.gradle` f
 ```groovy
 dependencies {
 	//consume library - use the latest version available on github packages
-	implementation "com.nerdstone:neat-android-stepper:1.0.6"
+	implementation "com.nerdstone:neat-android-stepper:1.0.7"
 	//....
 
 }
