@@ -50,9 +50,7 @@ dependencies {
 def properties = new Properties()
 properties.load(new FileInputStream(rootProject.file("local.properties")))
 
-def getVersionName = { ->
-    return "1.0.6"
-}
+version = "1.0.6"
 
 def getArtifactId = { ->
     return "neat-android-stepper"
@@ -62,9 +60,9 @@ publishing {
     publications {
         NeatStepper(MavenPublication) {
             groupId 'com.nerdstone'
-            artifactId getArtifactId()
-            version getVersionName()
-            artifact("$buildDir/outputs/aar/${getArtifactId()}-release.aar")
+            artifactId  getArtifactId()
+            version this.version
+            artifact("$buildDir/outputs/aar/${ getArtifactId()}-release.aar")
 
             pom {
                 name = 'Neat Android Stepper'
@@ -142,8 +140,8 @@ bintray {
     key = properties['jcenter.key'] ?: System.getenv('BINTRAY_KEY')
     configurations = ['archives']
     pkg {
-        repo = 'neat-stepper'
-        name = project.name
+        repo = 'nerdstone'
+        name = 'neat-android-stepper'
         licenses = ['Apache-2.0']
         desc = 'Library that allows using material stepper on an Android application.'
         publish = true

@@ -1,6 +1,10 @@
   
 # Neat Android Stepper  
-  
+
+
+[ ![Download](https://api.bintray.com/packages/ellykits/nerdstone/neat-android-stepper/images/download.svg) ](https://bintray.com/ellykits/nerdstone/neat-android-stepper/_latestVersion) 
+ 
+
 A Library that allows you to implement android stepper in your application.   
 Steppers are used to display progress of logically separated sections normally referred to as `steps`. This library was inspired by stepstone-tech [Android Material Stepper Library](https://www.google.com/design/spec/components/steppers.html)  
   
