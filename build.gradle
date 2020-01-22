@@ -21,7 +21,11 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
+    }
 
+    tasks.withType(Javadoc) {
+        excludes = ['**/*.kt'] // < ---- Exclude all kotlin files from javadoc file.
     }
 }
 

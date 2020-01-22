@@ -56,6 +56,32 @@ def getArtifactId = { ->
     return "neat-android-stepper"
 }
 
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            if (variant.hasProperty('javaCompileProvider')) {
+                // Android 3.3.0+
+                owner.classpath += variant.javaCompileProvider.get().classpath
+            } else {
+                owner.classpath += variant.javaCompile.classpath
+            }
+        }
+    }
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    archiveClassifier.set('javadoc')
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
 publishing {
     publications {
         NeatStepper(MavenPublication) {
@@ -63,6 +89,8 @@ publishing {
             artifactId  getArtifactId()
             version this.version
             artifact("$buildDir/outputs/aar/${ getArtifactId()}-release.aar")
+            artifact androidJavadocsJar
+            artifact androidSourcesJar
 
             pom {
                 name = 'Neat Android Stepper'
